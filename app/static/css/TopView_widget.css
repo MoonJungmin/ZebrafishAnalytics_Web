@@ -1,0 +1,9 @@
+.topview_widget{
+	position: absolute;
+	z-index: 3;
+	width: 230px;
+	height: 146px;
+	left: 2%;
+	top: 5%;
+	background-color:rgba(100, 0, 100, 0.0);
+}

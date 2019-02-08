@@ -1,0 +1,23 @@
+.mainviewer{
+	position: absolute;
+	z-index: 1;
+	width: 100%;
+	height: 100%;
+	left: 0px;
+	top: 0px;
+	background-color:rgba(200, 200, 0, 0.0);
+	
+}
+
+.cellinfo_tooltip_disable{
+    display: none;
+}
+
+.cellinfo_tooltip_enable{
+    display: inline;
+    position: absolute;
+	z-index: 3;
+	/*top : 500px;
+	left : 500px;*/
+    width: 15%;
+}

@@ -1,0 +1,18 @@
+.morphologicalfeature_widget{
+	position: absolute;
+	z-index: 2;
+	width: 30%;
+	height: 65%;
+	right: 0px;
+	top: 0px;
+	background-color:rgba(230, 230, 230, 1.0);
+	border-left: solid #DDD 2px;
+}
+
+.morphologicalfeature_contents{
+    padding: 0px;
+    height:595px; 
+    max-height: 595px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}

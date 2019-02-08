@@ -1,0 +1,485 @@
+<!doctype html>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<meta name="MobileOptimized" content="640">
+		<title>HVCL_VisualAnalytics</title>
+
+		<script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+		<link href="../static/css/bootstrap/bootstrap.min.css" rel="stylesheet" media="screen">
+    	<link href="../static/css/bootstrap/bootstrap-colorpicker.min.css" rel="stylesheet">		
+		
+		<link href="../static/css/temp/Navigation_widget.css" rel="stylesheet" media="screen">
+		<link href="../static/css/temp/MorphologicalFeature_widget.css" rel="stylesheet" media="screen">
+		<link href="../static/css/temp/TopView_widget.css" rel="stylesheet" media="screen">
+		<link href="../static/css/temp/GraphInterface_widget.css" rel="stylesheet" media="screen">
+		<link href="../static/css/temp/Operation_widget.css" rel="stylesheet" media="screen">
+		<link href="../static/css/temp/MainViewer.css" rel="stylesheet" media="screen">
+
+		
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+    	<script type="text/javascript" src="http://d3js.org/d3.v3.js"></script>
+		<script type="text/javascript" src="../static/js/lib/bootstrap.min.js"></script>
+		<script type="text/javascript" src="../static/js/lib/bootstrap-colorpicker.min.js"></script>
+		<script type="text/javascript" src="../static/js/lib/cytoscape.min.js"></script>
+		<script type="text/javascript" src="../static/js/lib/bignumber.min.js"></script>
+    	
+    	
+		<script src="../static/js/lib/horizon.js"></script>		
+
+		<style type="text/css">
+			* {  
+				margin: 0;  
+			}
+		</style>
+		<script type="text/javascript">
+			var flask_size = '{{size}}';
+			var flask_name = '{{name}}';
+		</script>
+
+		<script type="text/javascript" src="../static/js/SubregionViewer/d_Debug.js"></script>
+
+
+	</head>
+
+	<body style="overflow:hidden;" >
+		
+		<div class="mainviewer" id="mainviewer_id"></div>
+		<div class="topview_widget" id="topview_widget_id"></div>
+		<div class="navigation_widget" id="navigation_widget_id"></div>
+
+<!-- 		<div class="morphologicalfeature_widget" >
+			<div class="panel panel-default">
+				<div class="panel-heading"><b>Morphological Feature</b>
+
+				</div>
+				<div class="panel-body morphologicalfeature_contents">			
+					<div id="csp_feature_0"></div>
+					<div id="csp_feature_1"></div>
+					<div id="csp_feature_2"></div>
+					<div id="csp_feature_3"></div>
+					<div id="csp_feature_4"></div>
+					<div id="csp_feature_5"></div>
+					<div id="csp_feature_6"></div>
+					<div id="csp_feature_7"></div>
+					<div id="csp_feature_8"></div>
+					<div id="csp_feature_9"></div>
+					<div id="csp_feature_10"></div>
+					<div id="csp_feature_11"></div>
+					<div id="csp_feature_12"></div>
+					<div id="csp_feature_13"></div>
+					<div id="csp_feature_14"></div>
+					<div id="csp_feature_15"></div>
+					<div id="csp_feature_16"></div>
+					<div id="csp_feature_17"></div>
+					<div id="csp_feature_18"></div>
+				</div>
+			</div>
+
+		</div>
+ -->
+
+
+	<!-- 	<div class="operation_widget">
+			<div id="Manual" class="graphinterface_content_disable" >
+				<div class="panel panel-default">
+					<div class="panel-heading"><b>Manual Selection</b></div>
+					<div class="panel-body" style="height:70%; max-height: 70%;overflow-x: hidden; padding: 0px">			
+						<div id="manual_selection_area" style="display:none; border: thin dotted grey; padding-top: 10px; ">
+							<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px;">
+								<b>&bull; Selection Name : </b><div id="manual_selection_name" style="padding-left: 10px; word-break: break-all;" ></div>
+							</div>
+							<br>
+							<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px;">
+								<b>&bull; Manual Selection Count : </b><div id="manual_selection_count" style="padding-left: 10px; word-break: break-all;"></div>
+							</div>
+							<br>
+							<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px">
+								<b>&bull; Manual Selection Color : </b><div id="manual_selection_color" style="padding-left: 10px"></div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div> -->
+
+<!-- 			<div id="Subregion" class="graphinterface_content_disable">
+				<div class="panel panel-default">
+					<div class="panel-heading"><b>Subregion Selection</b></div>
+					<div class="panel-body">
+						<div id="subregion_selection_area" style="display:none; border: thin dotted grey; padding-top: 10px; ">
+							<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px;">
+								<b>&bull; Selection Name : </b><div id="subregion_selection_name" style="padding-left: 10px; word-break: break-all;" ></div>
+							</div>
+							<br>
+							<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px;">
+								<b>&bull; Subregion Name : </b><div id="subregion_selection_subregionname" style="padding-left: 10px; word-break: break-all;"></div>
+							</div>
+							<br>
+							<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px">
+								<b>&bull; Subregion Color : </b><div id="subregion_selection_color" style="padding-left: 10px"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="Diagram" class="graphinterface_content_enable">
+				<div class="panel panel-default">	
+					<div class="panel-heading"><b>Diagram Selection</b></div>
+					<div class="panel-body">
+						<div class='content' id='csp_plot_contents'></div>			
+					</div>
+				</div>
+			</div> -->
+<!-- 
+			<div id="Statistics" class="graphinterface_content_disable" style="background: white">
+				<div class="panel panel-default">
+					<div class="panel-heading"><b>Statistics Infomation</b></div>
+					<div class="panel-body">
+						<div id="statistics_area" style="display:none; border: thin dotted grey; padding-top: 10px; ">
+							<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px;">
+								<b>&bull; Parents Subset Name : </b><div id="statistics_parents_name" style="padding-left: 10px; word-break: break-all;"></div>
+							</div>
+							<br>
+							<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px;">
+								<b>&bull; Statistics Function Name : </b><div id="statistics_function_name" style="padding-left: 10px; word-break: break-all;" ></div>
+							</div>
+							<br>
+							<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px;">
+								<b>&bull; Morphological Feature Name : </b><div id="statistics_morphological_feature_name" style="padding-left: 10px; word-break: break-all;" ></div>
+							</div>
+							<br>
+							<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px;">
+								<b>&bull; Value : </b><div id="statistics_value" style="padding-left: 10px; word-break: break-all;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="SetOperation" class="graphinterface_content_disable" style="background: white">
+				<div class="panel panel-default">
+					<div class="panel-heading"><b>Set Operation</b></div>
+					<div class="panel-body">
+						<div id="setoperation_area" style="display:none; border: thin dotted grey; padding-top: 10px; ">
+							<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px;">
+								<b>&bull; Selection Name : </b><div id="setoperation_selection_name" style="padding-left: 10px; word-break: break-all;" ></div>
+							</div>
+							<br>
+							<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px;">
+								<b>&bull; Set Operation Name : </b><div id="setoperation_operation_name" style="padding-left: 10px; word-break: break-all;" ></div>
+							</div>
+							<br>
+							<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px;">
+								<b>&bull; Operand1 : </b><div id="setoperation_operand1_name" style="padding-left: 10px; word-break: break-all;"></div>
+							</div>
+							<br>
+							<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px">
+								<b>&bull; Operand2 : </b><div id="setoperation_operand2_name" style="padding-left: 10px"></div>
+							</div>
+							<br>
+							<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px">
+								<b>&bull; Set Operation Color : </b><div id="setoperation_color" style="padding-left: 10px"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+ -->
+			<div id="Rendering" class="graphinterface_content_disable">
+				<h3>Rendering</h3>
+				<p>can not be used</p>
+			</div>
+
+			<div id="SetInfomation" class="graphinterface_content_disable">
+				<div class="panel panel-default">	
+					<div class="panel-heading"><b>Set Infomation</b></div>
+					<div class="panel-body">
+						<div id="set_infomation_area" style="display:none; border: thin dotted grey; padding-top: 10px; ">
+							<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px;">
+								<b>&bull; Selection Name : </b><div id="set_infomation_name" style="padding-left: 10px; word-break: break-all;" ></div>
+							</div>
+							<br>
+							<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px;">
+								<b>&bull; Parents Operation Name : </b><div id="set_infomation_parents_operation" style="padding-left: 10px; word-break: break-all;"></div>
+							</div>
+							<br>
+							<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px">
+								<b>&bull; Selected cells infomation : </b><div id="set_infomation_cellsinfo" style="padding-left: 10px;word-break: break-all;"></div>
+							</div>
+							<br>
+							<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px">
+								<b>&bull; Selected cells color : </b><div id="set_infomation_color" style="padding-left: 10px"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+
+		<div class="graphinterface_redering_order">
+				<table cellspacing="0" cellpadding="0" border="0" width="310">
+					<tr>
+						<td>
+							<table cellspacing="0" cellpadding="1" width="285" frame=void height="30">
+								<tr style="color:white;background-color:#1f78b4">
+									<th class="col-xs-1"><span class="glyphicon glyphicon-eye-open"></span></th>
+									<th class="col-xs-9">Name</th>
+									<th class="col-xs-1"><span class="glyphicon glyphicon-triangle-top"></span></th>
+									<th class="col-xs-1"><span class="glyphicon glyphicon-triangle-bottom"></span></th>
+								</tr>
+							</table>
+						</td>
+					</tr>
+						<tr>
+							<td>
+							<div style="width:305px; height:285px; overflow:auto;">
+								<table id="rendering_order_list" cellspacing="0" cellpadding="1" width="285" style="background-color: white" frame=void>
+								</table>
+							</div>
+							</td>
+						</tr>
+
+  				</table>
+		</div>
+
+		<div class="graphinterface_widget">
+			<div class="graphinterface_btn_group">
+				<button type="button" class="btn btn-primary btn-xs graphinterface_btn" onclick="GraphInterfaceModule.initOperateFunc()" >
+					Operate Func <span class="glyphicon glyphicon-plus-sign"></span>
+				</button>
+				
+				<button type="button" class="btn btn-primary btn-xs graphinterface_btn" onclick="GraphInterfaceModule.initStatisticsFunc()">
+					Statistics Func <span class="glyphicon glyphicon-list-alt"></span>
+				</button>
+				<button type="button" class="btn btn-primary btn-xs graphinterface_btn" >3D Rendering Func <span class="glyphicon glyphicon-fire"></span></button>
+				<button type="button" class="btn btn-success btn-xs graphinterface_btn" onclick="SaveLoadModule.PopSaveModal()">Save Graph <span class="glyphicon glyphicon-save"></span></button>
+			</div>
+			<div class="graphinterface_cytoscape" id="graphinterface_widget_id"></div>
+		</div>
+
+
+
+
+		<div id="operate_func_modal" class="modal fade" role="dialog" tabindex="-1">
+			<div class="modal-dialog">
+				
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Make Subset of Cells</h4>
+					</div>
+					
+					<div class="modal-body">
+						<div class="dropdown">
+							<button class="btn btn-default btn-xs" type="button" data-toggle="dropdown">Select Operate Function <span class="caret"></span></button>
+							<ul class="dropdown-menu scrollable-menu" id="operate_func_list"></ul>
+						</div>
+						<hr style="margin-top: 8px;margin-bottom: 8px;">
+						<div id="operation_share_area">
+							<b>Selection Name</b>
+							<input id ="operate_name" type="text" value="" class="form-control" />
+							<br>
+							<b>Selection Color</b>
+							<div id="cp13" class="input-group colorpicker-component"> <input id ="operate_color" type="text" value="" class="form-control" /> <span class="input-group-addon"><i></i></span> </div>
+						</div>
+						<hr style="margin-top: 8px;margin-bottom: 8px;">
+						
+						<div class="operate_func_disable" id="operate_func_subregion">
+							<b>Subregion</b>
+							<div class="dropdown">
+								<input id ="operate_subregion_name" type="text" value="" class="form-control" data-toggle="dropdown"/>
+								<ul class="dropdown-menu dropdown-menu-right scrollable-menu" id="operate_subregion_list"></ul>
+							</div>
+							<input id ="operate_subregion_index" type="text" value="" class="form-control" style="display: none" />
+						</div>
+
+						<div class="operate_func_disable" id="operate_func_diagram">
+							<b>X Axis Feature</b>
+							<div class="dropdown">
+								<input id ="operate_diagram_xaxis_name" type="text" value="" class="form-control" data-toggle="dropdown"/>
+								<ul class="dropdown-menu dropdown-menu-right scrollable-menu" id="operate_feature_list_x"></ul>
+							</div>
+							<input id ="operate_diagram_xaxis_index" type="text" value="" class="form-control" style="display: none" />
+							
+							<b>Y Axis Feature</b>
+							<div class="dropdown">
+								<input id ="operate_diagram_yaxis_name" type="text" value="" class="form-control" data-toggle="dropdown"/>
+								<ul class="dropdown-menu dropdown-menu-right scrollable-menu" id="operate_feature_list_y"></ul>
+							</div>
+							<input id ="operate_diagram_yaxis_index" type="text" value="" class="form-control" style="display: none" />
+						</div>
+						<div class="operate_func_disable" id="operate_func_manual">
+
+						</div>
+						<div class="operate_func_disable" id="operate_func_set">
+							<b>Operand 1</b>
+							<div class="dropdown">
+								<input id ="operate_set_operand1_name" type="text" value="" class="form-control" data-toggle="dropdown"/>
+								<ul class="dropdown-menu dropdown-menu-right scrollable-menu" id="operate_set_operand1_list"></ul>
+							</div>
+							<input id ="operate_set_operand1_index" type="text" value="" class="form-control" style="display: none" />
+							
+							<b>Operand 2</b>
+							<div class="dropdown">
+								<input id ="operate_set_operand2_name" type="text" value="" class="form-control" data-toggle="dropdown"/>
+									<ul class="dropdown-menu dropdown-menu-right scrollable-menu" id="operate_set_operand2_list"></ul>
+							</div>
+							<input id ="operate_set_operand2_index" type="text" value="" class="form-control" style="display: none" />
+
+							<b>Operation</b>
+							<div class="dropdown">
+								<input id ="operate_set_operation_name" type="text" value="" class="form-control" data-toggle="dropdown"/>
+								<ul class="dropdown-menu dropdown-menu-right scrollable-menu" id="operate_set_operation_list"></ul>
+							</div>
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<div class="operate_func_disable" id="operate_func_subregion_button">
+							<button type="button" onclick="GraphInterfaceModule.addSubregion()" class="btn btn-default" data-dismiss="modal">Proceed</button>
+						</div>
+						<div class="operate_func_disable" id="operate_func_diagram_button">
+							<button type="button" onclick="GraphInterfaceModule.addScatterPlot()" class="btn btn-default" data-dismiss="modal">Proceed</button>
+							<input id ="operate_func_diagram_type" type="text" value="" class="form-control" style="display: none" />
+						</div>
+						<div class="operate_func_disable" id="operate_func_manual_button">
+							<button type="button" onclick="GraphInterfaceModule.addManual()" class="btn btn-default" data-dismiss="modal">Proceed</button>
+							<input id ="operate_func_manual_type" type="text" value="" class="form-control" style="display: none" />
+						</div>
+						<div class="operate_func_disable" id="operate_func_set_button">
+							<button type="button" onclick="GraphInterfaceModule.addSetOperation()" class="btn btn-default" data-dismiss="modal">Proceed</button>
+						</div>
+
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<div id="statistics_func_modal" class="modal fade" role="dialog" tabindex="-1">
+			<div class="modal-dialog">
+				
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Make Statistics</h4>
+					</div>
+					
+					<div class="modal-body">
+						<div id="statistics_func_area">
+							<b>Statisctics Function</b>
+							<div class="dropdown">
+								<input id ="statistics_func_name" type="text" value="" class="form-control" data-toggle="dropdown"/>
+								<ul class="dropdown-menu dropdown-menu-right scrollable-menu" id="statistics_func_list"></ul>
+							</div>
+						</div>
+						<div class="operate_func_disable" id="statistics_feature">
+							<b>Morphological Feature</b>
+							<div class="dropdown">
+								<input id ="statistics_feature_name" type="text" value="" class="form-control" data-toggle="dropdown"/>
+								<ul class="dropdown-menu dropdown-menu-right scrollable-menu" id="statistics_feature_list"></ul>
+							</div>
+							<input id ="statistics_feature_index" type="text" value="" class="form-control" style="display: none" />
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" onclick="GraphInterfaceModule.addStatistics()" class="btn btn-default" data-dismiss="modal">Proceed</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="save_modal" class="modal fade" role="dialog" tabindex="-1">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">Save Graph</h4>
+					</div>
+					
+					<div class="modal-body">
+						<div id="save_area">
+							<b>Save Graph Name</b>
+							<input id ="save_name" type="text" value="" class="form-control" />
+						</div>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" onclick="SaveLoadModule.Save()" class="btn btn-default" data-dismiss="modal">Proceed</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div id="cell_infomation_tooltip" class="cellinfo_tooltip_disable">
+			<div class="panel panel-default">	
+				<div class="panel-heading"><b>Cell Infomation</b></div>
+				<div class="panel-body">
+					<div id="cell_infomation_contents" style="display:block; border: thin dotted grey; padding-top: 10px; ">
+						<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px;">
+							<b>&bull; Cell Label : </b><div id="cell_infomation_contents_label" style="padding-left: 10px; word-break: break-all;" ></div>
+						</div>
+						<br>
+						<div style="display: inline-flex; margin-bottom: 10px; padding-left: 20px;">
+							<b>&bull; Location : </b><div id="cell_infomation_contents_location" style="padding-left: 10px; word-break: break-all;"></div>
+						</div>
+						<br>
+						
+						<div id="cell_infomation_contents_feature"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+	<script> $(function() { $('#cp13').colorpicker(); }); </script>
+
+
+
+	</body>
+	
+
+		<script src="../static/js/SubregionViewer/g_GlobalVariable.js"></script>
+
+		<!-- <script src="../static/js/SubregionViewer/Worker/w_CheckLoadingTile.js"></script> -->
+		
+		<!-- <script type="text/javascript">
+				openTab(event, 'Manual');
+		</script> -->
+		<script src="../static/js/SubregionViewer/c_Initialize.js"></script>
+		<script src="../static/js/SubregionViewer/c_Socket.js"></script>
+		<script src="../static/js/SubregionViewer/c_EventHandler.js"></script>
+		<script src="../static/js/SubregionViewer/c_SetInfomation.js"></script>
+		<script src="../static/js/SubregionViewer/c_SetOperation.js"></script>
+		<script src="../static/js/SubregionViewer/c_Statistics.js"></script>	
+
+
+		<script src="../static/js/SubregionViewer/v_Background_EMImage.js"></script>
+		<script src="../static/js/SubregionViewer/v_CellLabels.js"></script>
+		<script src="../static/js/SubregionViewer/v_TopViewNavigation_Widget.js"></script>
+		<script src="../static/js/SubregionViewer/v_Navigation_Widget.js"></script>
+		<script src="../static/js/SubregionViewer/v_SubregionSelection.js"></script>
+
+		<script src="../static/js/SubregionViewer/c_TileDataModule.js"></script>
+		<script src="../static/js/SubregionViewer/v_Subregion.js"></script>
+
+		<script src="../static/js/SubregionViewer/v_MorphologicalFeature.js"></script>
+		<script src="../static/js/SubregionViewer/v_DiagramSelection.js"></script>
+		<script src="../static/js/SubregionViewer/v_ManualSelection.js"></script>
+
+		<script src="../static/js/SubregionViewer/v_GraphInterface.js"></script>		
+		<script src="../static/js/SubregionViewer/c_SaveLoadModule.js"></script>
+
+
+		<!-- <script src="../static/js/c_StatisticsReportModule.js"></script> -->
+
+</html>
+

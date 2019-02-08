@@ -1,0 +1,23 @@
+.operation_widget{
+	position: absolute;
+	z-index: 2;
+	width: 30%;
+	height: 35%;
+	right: 0px;
+	bottom: 0px;
+	background-color:rgba(230, 230, 230, 1.0);
+	border-top: solid #DDD 2px;
+	border-left: solid #DDD 2px;
+}
+
+.operate_func_disable{
+	display: none;
+}
+.operate_func_enable{
+	display: inline;
+}
+
+.glyphicon.glyphicon-one-fine-dot:before {
+	content: "\25cf";
+	font-size: 1.5em;
+}
